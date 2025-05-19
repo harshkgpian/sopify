@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOP Generator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>SOP Generator</h1>
+      <p>Upload your resume and input additional information to generate a personalized Statement of Purpose</p>
+    </header>
+
+    <main>
+      <div class="stepper">
+        <div class="step active" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-title">Upload Resume</div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-title">Additional Info</div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-number">3</div>
+          <div class="step-title">Review & Generate</div>
+        </div>
+        <div class="step" data-step="4">
+          <div class="step-number">4</div>
+          <div class="step-title">Humanize SOP</div>
+        </div>
+      </div>
+
+      <div class="form-container">
+        <!-- Step 1: Resume Upload -->
+        <div class="form-step active" id="step1">
+          <h2>Upload Your Resume</h2>
+          <p>Upload your resume in PDF or Word format.</p>
+          
+          <div class="upload-container">
+            <div class="upload-box" id="drop-area">
+              <img src="assets/upload-icon.svg" alt="Upload" id="upload-icon">
+              <p>Drag and drop your resume here or click to browse</p>
+              <input type="file" id="resume-upload" name="resume" accept=".pdf,.doc,.docx" hidden>
+              <button type="button" id="browse-btn">Browse Files</button>
+            </div>
+            <div class="upload-status" id="upload-status"></div>
+          </div>
+          
+          <div class="nav-buttons">
+            <button type="button" class="next-btn" id="next-to-step2" disabled>Next</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Additional Information -->
+        <div class="form-step" id="step2">
+          <h2>Additional Information</h2>
+          <p>Please provide additional details for your Statement of Purpose.</p>
+          
+          <form id="info-form">
+            <div class="form-group">
+              <label for="program">Target Program*</label>
+              <input type="text" id="program" name="program" required placeholder="e.g., Master of Computer Science">
+            </div>
+            
+            <div class="form-group">
+              <label for="university">Target University*</label>
+              <input type="text" id="university" name="university" required placeholder="e.g., Stanford University">
+            </div>
+            
+            <div class="form-group">
+              <label for="degree">Degree Applying For*</label>
+              <input type="text" id="degree" name="degree" required placeholder="e.g., Master's, PhD">
+            </div>
+            
+            <div class="form-group">
+              <label for="experience">Key Work Experience</label>
+              <textarea id="experience" name="experience" rows="3" placeholder="Relevant work experience not mentioned in your resume"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="achievements">Key Achievements</label>
+              <textarea id="achievements" name="achievements" rows="3" placeholder="Notable achievements, awards, or projects"></textarea>
+            </div>
+          </form>
+          
+          <div class="nav-buttons">
+            <button type="button" class="back-btn" id="back-to-step1">Back</button>
+            <button type="button" class="next-btn" id="next-to-step3">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Review and Generate -->
+        <div class="form-step" id="step3">
+          <h2>Review and Generate</h2>
+          <p>Review your information and generate your Statement of Purpose.</p>
+          
+          <div class="review-container">
+            <div class="review-section">
+              <h3>Resume</h3>
+              <p id="resume-preview">Resume text preview will appear here...</p>
+            </div>
+            
+            <div class="review-section">
+              <h3>Additional Information</h3>
+              <div id="info-preview">
+                <p><strong>Program:</strong> <span id="program-preview"></span></p>
+                <p><strong>University:</strong> <span id="university-preview"></span></p>
+                <p><strong>Degree:</strong> <span id="degree-preview"></span></p>
+                <p><strong>Experience:</strong> <span id="experience-preview"></span></p>
+                <p><strong>Achievements:</strong> <span id="achievements-preview"></span></p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="nav-buttons">
+            <button type="button" class="back-btn" id="back-to-step2">Back</button>
+            <button type="button" class="generate-btn" id="generate-sop">Generate SOP</button>
+          </div>
+          
+          <div class="loading-container" id="loading-container">
+            <div class="loader"></div>
+            <p>Generating your SOP... This may take a minute.</p>
+          </div>
+        </div>
+
+        <!-- Step 4: Humanize SOP -->
+        <div class="form-step" id="step4">
+          <h2>Humanize Your SOP</h2>
+          <p>Your SOP has been generated! You can now humanize it using the Undetectable AI Pro extension.</p>
+          
+          <div class="sop-container">
+            <h3>Generated SOP</h3>
+            <textarea id="generated-sop" readonly></textarea>
+            <button type="button" class="copy-btn" id="copy-sop">Copy to Clipboard</button>
+          </div>
+          
+          <div class="humanizer-container">
+            <h3>Humanize Your SOP</h3>
+            <p>Paste your SOP below to humanize it:</p>
+            <textarea id="inputText" placeholder="Paste your SOP here..."></textarea>
+            <button id="generateButton">Generate Humanized Text</button>
+            
+            <div id="status">Status: Idle</div>
+            <h3>Humanized Result:</h3>
+            <div id="result"></div>
+            <button type="button" class="copy-btn" id="copy-humanized">Copy Humanized Text</button>
+          </div>
+          
+          <div class="nav-buttons">
+            <button type="button" class="back-btn" id="back-to-step3">Back</button>
+            <button type="button" class="restart-btn" id="restart">Start Over</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 SOP Generator. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/upload-handler.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/humanizer.js"></script>
+</body>
+</html>

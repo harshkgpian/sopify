@@ -1,4 +1,4 @@
-// public/js/upload-handler.js
+// public/js/upload-handler.js - UPDATED for Vercel Serverless
 document.addEventListener('DOMContentLoaded', function() {
   // Elements
   const dropArea = document.getElementById('drop-area');
@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const uploadStatus = document.getElementById('upload-status');
   const nextBtn = document.getElementById('next-to-step2');
   
-  // Global variables
-  let uploadedResumeId = null;
-  let resumeText = '';
+  // Global variables to store extracted text (will be accessible via window.sopGenerator)
+  let resumeFullText = '';
+  let resumePreviewText = '';
 
   // Prevent default behavior for drag events
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -105,9 +105,13 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-        uploadedResumeId = data.uploadId;
-        resumeText = data.extractedText;
-        document.getElementById('resume-preview').textContent = data.extractedText;
+        // Store the full text in our variable for later use
+        resumeFullText = data.extractedText;
+        resumePreviewText = data.previewText || data.extractedText.substring(0, 200) + '...';
+        
+        // Update the UI with preview text
+        document.getElementById('resume-preview').textContent = resumePreviewText;
+        
         showUploadStatus('success', 'Resume uploaded and processed successfully!');
         nextBtn.disabled = false;
       } else {
@@ -132,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Make variables available globally
   window.sopGenerator = {
-    getUploadedResumeId: () => uploadedResumeId,
-    getResumeText: () => resumeText
+    getResumeText: () => resumeFullText,
+    getResumePreview: () => resumePreviewText
   };
 });

@@ -1,4 +1,4 @@
-// server/api/resume.js - UPDATED for Vercel
+// server/api/resume.js - UPDATED for Vercel Serverless
 const express = require('express');
 const router = express.Router();
 const upload = require('../middleware/file-upload');
@@ -30,24 +30,22 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
     // Extract text from the uploaded file
     const extractedText = await TextExtractor.extractText(req.file.path);
 
-    // Store the file path and extracted text in the session
-    // Note: In a production app, you'd use a database or proper session management
-    if (!req.app.locals.userUploads) {
-      req.app.locals.userUploads = {};
-    }
-    
-    const uploadId = Date.now().toString();
-    req.app.locals.userUploads[uploadId] = {
-      filePath: req.file.path,
-      extractedText
-    };
-
+    // Return the full extracted text to the client
+    // (we'll store it in the browser, not in server memory)
     res.status(200).json({
       success: true,
       message: 'Resume uploaded and processed successfully',
-      uploadId,
-      extractedText: extractedText.substring(0, 200) + '...' // Preview of extracted text
+      extractedText: extractedText, // Return full extracted text
+      previewText: extractedText.substring(0, 200) + '...' // Preview for display
     });
+
+    // Cleanup: delete the file after processing
+    try {
+      fs.unlinkSync(req.file.path);
+    } catch (err) {
+      console.error('Error deleting temporary file:', err);
+      // Non-critical error, we can continue
+    }
   } catch (error) {
     console.error('Error processing resume:', error);
     res.status(500).json({

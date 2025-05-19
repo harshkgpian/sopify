@@ -1,4 +1,4 @@
-// public/js/main.js
+// public/js/main.js - UPDATED for Vercel Serverless
 document.addEventListener('DOMContentLoaded', function() {
   // Step navigation elements
   const steps = document.querySelectorAll('.step');
@@ -99,19 +99,19 @@ document.addEventListener('DOMContentLoaded', function() {
     loadingContainer.style.display = 'block';
     generateSopBtn.disabled = true;
     
-    // Get uploaded resume ID
-    const uploadId = window.sopGenerator.getUploadedResumeId();
+    // Get the stored resume text
+    const resumeText = window.sopGenerator.getResumeText();
     
-    if (!uploadId) {
-      alert('Please upload a resume first');
+    if (!resumeText) {
+      alert('Resume text not found. Please upload a resume first.');
       loadingContainer.style.display = 'none';
       generateSopBtn.disabled = false;
       return;
     }
     
-    // Prepare data for SOP generation
+    // Prepare data for SOP generation - now including the full resume text
     const data = {
-      uploadId,
+      resumeText: resumeText, // Send the full text instead of just the ID
       program: programInput.value,
       university: universityInput.value,
       degree: degreeInput.value,

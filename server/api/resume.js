@@ -1,4 +1,4 @@
-// server/api/resume.js
+// server/api/resume.js - UPDATED for Vercel
 const express = require('express');
 const router = express.Router();
 const upload = require('../middleware/file-upload');
@@ -6,10 +6,15 @@ const TextExtractor = require('../services/text-extractor');
 const fs = require('fs');
 const path = require('path');
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, '../../uploads');
+// Use /tmp directory in Vercel instead of a project-relative directory
+const uploadsDir = path.join('/tmp', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+  try {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  } catch (error) {
+    console.error('Error creating uploads directory:', error);
+    // Continue even if directory creation fails - we'll handle errors at upload time
+  }
 }
 
 // Upload and process resume

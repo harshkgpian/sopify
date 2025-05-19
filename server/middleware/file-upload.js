@@ -1,11 +1,22 @@
-// server/middleware/file-upload.js
+// server/middleware/file-upload.js - UPDATED for Vercel
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+
+// Ensure the uploads directory exists in /tmp (for Vercel serverless environment)
+const uploadsDir = path.join('/tmp', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  try {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  } catch (error) {
+    console.error('Error creating uploads directory:', error);
+  }
+}
 
 // Set storage engine
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, path.join(__dirname, '../../uploads/'));
+    cb(null, uploadsDir);
   },
   filename: function(req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);

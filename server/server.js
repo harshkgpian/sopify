@@ -1,4 +1,4 @@
-// server/server.js
+// server/server.js - UPDATED for Vercel
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -14,12 +14,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '../public')));
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  app.use(express.static(path.join(__dirname, '../public')));
+} 
+// For Vercel deployment, static files are handled by Vercel config
 
 // API routes
 app.use('/api', apiRoutes);
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Handle 404 for API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ error: 'Not found' });
 });
+
+// For local development, start the server
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+// Export for Vercel
+module.exports = app;
